@@ -26,7 +26,12 @@
       "Bash(lsof -i :3000)",
       "Bash(kill -9 2402)",
       "Bash(npm run dev -- --port 3000)",
-      "Bash(kill -9 7755)"
+      "Bash(kill -9 7755)",
+      "Bash(ls -1d specs/*/)",
+      "Bash(mkdir -p specs/1-todo-backend-spec)",
+      "Bash(git fetch)",
+      "Bash(.specify/scripts/bash/check-prerequisites.sh --json --paths-only)",
+      "Bash(cat specs/1-todo-backend-spec/checklists/requirements.md)"
     ]
   }
 }

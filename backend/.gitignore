@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+.venv/
+.env
+.env.local
+.env.dev
+.env.test
+.env.prod
+.venv/
+.python-version
+.python-history
+*.so
+.Python
+cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.cov/
+.tox/
+nox/
+.pyre/
+.pytype/
+cython_debug/
+
+# FastAPI / Uvicorn
+*.log
+logs/
+*.log.*
+.sass-cache/
+.node-version
+.nvmrc
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.dev
+.env.test
+.env.prod
