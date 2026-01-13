@@ -13,7 +13,20 @@
       "Bash(npm install next react react-dom)",
       "Bash(sudo rm -rf frontend/node_modules)",
       "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --no-src-dir --no-import-alias --use-pnpm)",
-      "Bash(npm install --legacy-peer-deps)"
+      "Bash(npm install --legacy-peer-deps)",
+      "Bash(npm run dev)",
+      "Bash(rm -rf node_modules)",
+      "Bash(npx next dev)",
+      "Bash(npm install tailwindcss postcss autoprefixer)",
+      "Bash(npx tailwindcss init -p)",
+      "Bash(./node_modules/.bin/tailwindcss init -p)",
+      "Bash(npm install --save-dev tailwindcss postcss autoprefixer)",
+      "Bash(npm install --save-dev @tailwindcss/postcss)",
+      "Bash(npm uninstall --save-dev @tailwindcss/postcss)",
+      "Bash(lsof -i :3000)",
+      "Bash(kill -9 2402)",
+      "Bash(npm run dev -- --port 3000)",
+      "Bash(kill -9 7755)"
     ]
   }
 }

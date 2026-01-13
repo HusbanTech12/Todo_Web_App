@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
+import '@/styles/globals.css'
 import { AuthProvider } from '@/components/AuthProvider'
 import Navigation from '@/components/Navigation'
 
@@ -9,6 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Todo App Phase II',
   description: 'A secure todo application with authentication',
+  metadataBase: new URL('http://localhost:3000'),
   keywords: 'todo, tasks, productivity, authentication, secure',
   authors: [{ name: 'Todo App Team' }],
   creator: 'Todo App Team',
