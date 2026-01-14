@@ -18,11 +18,9 @@ const CreateTaskPage = () => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { token } = useAuth();
+  const { user } = useAuth();
 
-  if (token) {
-    apiClient.setToken(token);
-  }
+  // The apiClient will automatically get the token from Better Auth
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

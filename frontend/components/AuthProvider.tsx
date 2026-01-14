@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { getSession, signIn, signUp, signOut } from '@/lib/better-auth-client';
 
 interface User {
   id: string;
@@ -13,7 +14,7 @@ interface AuthContextType {
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -29,16 +30,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing token in localStorage on initial load
-    const storedToken = localStorage.getItem('authToken');
-    const storedUser = localStorage.getItem('user');
+    // Initialize auth state from Better Auth session
+    const initializeAuth = async () => {
+      try {
+        const session = await getSession();
+        if (session?.user) {
+          const userData = {
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.name || session.user.email.split('@')[0]
+          };
 
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-    }
+          setUser(userData);
+          // Better Auth provides the token, but we need to get it
+          // For now, we'll use the session token if available
+          if (session.accessToken) {
+            setToken(session.accessToken);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to initialize auth session:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setLoading(false);
+    initializeAuth();
 
     // Listen for auth-error events from the API client
     const handleAuthError = () => {
@@ -54,24 +71,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    // In a real app, this would call the backend API
-    // For now, we'll simulate a login response
     try {
-      // Simulate API call to backend
-      const response = {
-        user: {
-          id: '1',
-          email,
-          name: email.split('@')[0] // Simple name extraction
-        },
-        token: 'fake-jwt-token-for-demo'
-      };
+      const response = await signIn.email({
+        email,
+        password,
+        callbackURL: '/tasks', // Redirect to tasks page after login
+      });
 
-      // Store user and token
-      setUser(response.user);
-      setToken(response.token);
-      localStorage.setItem('authToken', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      if (response?.user) {
+        const userData = {
+          id: response.user.id,
+          email: response.user.email,
+          name: response.user.name || email.split('@')[0]
+        };
+
+        setUser(userData);
+        if (response.accessToken) {
+          setToken(response.accessToken);
+        }
+      }
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
@@ -79,39 +97,52 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signup = async (email: string, password: string, name: string) => {
-    // In a real app, this would call the backend API
-    // For now, we'll simulate a signup response
     try {
-      // Simulate API call to backend
-      const response = {
-        user: {
-          id: '1',
-          email,
-          name
-        },
-        token: 'fake-jwt-token-for-demo'
-      };
+      const response = await signUp.email({
+        email,
+        password,
+        name,
+        callbackURL: '/tasks', // Redirect to tasks page after signup
+      });
 
-      // Store user and token
-      setUser(response.user);
-      setToken(response.token);
-      localStorage.setItem('authToken', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      if (response?.user) {
+        const userData = {
+          id: response.user.id,
+          email: response.user.email,
+          name: response.user.name || name
+        };
+
+        setUser(userData);
+        if (response.accessToken) {
+          setToken(response.accessToken);
+        }
+      }
     } catch (error) {
       console.error('Signup failed:', error);
       throw error;
     }
   };
 
-  const logout = () => {
-    // Clear user and token from state and storage
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+  const logout = async () => {
+    try {
+      await signOut();
+
+      // Clear user and token from state and storage
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Still clear local state even if backend logout fails
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+    }
   };
 
-  const isAuthenticated = !!token;
+  const isAuthenticated = !!user;
 
   const value = {
     user,

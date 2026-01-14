@@ -12,18 +12,17 @@ import Button from '@/components/Button';
 const TaskDetailPage = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { token } = useAuth();
+  const { user } = useAuth();
 
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (token) {
-      apiClient.setToken(token);
+    if (user) {
       fetchTask();
     }
-  }, [token, id]);
+  }, [user, id]);
 
   const fetchTask = async () => {
     try {

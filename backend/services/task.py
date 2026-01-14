@@ -1,7 +1,7 @@
 from sqlmodel import Session, select, update
 from typing import List, Optional
-from backend.models.task import Task, TaskCreate, TaskUpdate, TaskCompleteUpdate
-from backend.exceptions import TaskNotFoundException, TaskNotOwnedException
+from ..models.task import Task, TaskCreate, TaskUpdate, TaskCompleteUpdate
+from ..exceptions import TaskNotFoundException, TaskNotOwnedException
 from datetime import datetime
 
 def create_task(session: Session, task_data: TaskCreate, user_id: str) -> Task:

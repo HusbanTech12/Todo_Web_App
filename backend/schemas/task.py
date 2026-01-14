@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-from backend.models.task import Task
+from ..models.task import Task
 
 class TaskResponse(BaseModel):
     id: str

@@ -14,7 +14,7 @@ import Form from '@/components/Form';
 const EditTaskPage = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { token } = useAuth();
+  const { user } = useAuth();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -23,11 +23,10 @@ const EditTaskPage = () => {
   const [task, setTask] = useState<Task | null>(null);
 
   useEffect(() => {
-    if (token) {
-      apiClient.setToken(token);
+    if (user) {
       fetchTask();
     }
-  }, [token, id]);
+  }, [user, id]);
 
   const fetchTask = async () => {
     try {

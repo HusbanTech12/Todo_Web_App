@@ -31,7 +31,26 @@
       "Bash(mkdir -p specs/1-todo-backend-spec)",
       "Bash(git fetch)",
       "Bash(.specify/scripts/bash/check-prerequisites.sh --json --paths-only)",
-      "Bash(cat specs/1-todo-backend-spec/checklists/requirements.md)"
+      "Bash(cat specs/1-todo-backend-spec/checklists/requirements.md)",
+      "Bash(find frontend -name \"package.json\" -exec cat {} ;)",
+      "Bash(ls:*)",
+      "Bash(npm install better-auth)",
+      "Bash(npm install better-auth @better-auth/react)",
+      "Bash(pip install -r requirements.txt)",
+      "Bash(pip install -r requirements.txt --break-system-packages)",
+      "Bash(PYTHONPATH=. python3 -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload)",
+      "Bash(pip install pydantic-settings --break-system-packages)",
+      "Bash(python3 -c \"\nimport sys\nsys.path.insert\\(0, ''.''\\)\n\ntry:\n    from main import app\n    print\\(''Import successful''\\)\nexcept Exception as e:\n    print\\(f''Import error: {e}''\\)\n    import traceback\n    traceback.print_exc\\(\\)\n\")",
+      "Bash(python3 -m backend.main)",
+      "Bash(pip install psycopg2-binary --break-system-packages)",
+      "Bash(curl -X GET http://localhost:8000/docs)",
+      "Bash(curl -X GET http://localhost:8000/api/health)",
+      "Bash(curl -X GET http://localhost:3000)",
+      "Bash(timeout 30 npm run dev)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(curl -I http://localhost:3000)",
+      "Skill(sp.phr)"
     ]
   }
 }

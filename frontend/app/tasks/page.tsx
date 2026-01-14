@@ -14,14 +14,13 @@ const TasksPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const { token } = useAuth();
+  const { user } = useAuth(); // We'll use user presence to check if authenticated
 
   useEffect(() => {
-    if (token) {
-      apiClient.setToken(token);
+    if (user) {
       fetchTasks();
     }
-  }, [token]);
+  }, [user]);
 
   const fetchTasks = async () => {
     try {

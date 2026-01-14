@@ -2,12 +2,12 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from backend.routes import tasks
-from backend.routes import health
-from backend.config import settings
+from .routes import tasks
+from .routes import health
+from .config import settings
 from sqlmodel import SQLModel
-from backend.db import engine
-from backend.models.base import Base
+from .db import engine
+from .models.base import Base
 
 app = FastAPI(title="Todo Backend API", version="1.0.0")
 
