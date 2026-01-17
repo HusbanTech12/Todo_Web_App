@@ -55,7 +55,20 @@
       "Bash(npx tsc --noEmit)",
       "Bash(npx tsc --noEmit --pretty)",
       "Bash(echo \"TypeScript check completed with exit code $?\")",
-      "Bash(rm -rf frontend/)"
+      "Bash(rm -rf frontend/)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(kill -9 1258 1285 1299)",
+      "Bash(pkill -f \"next-server\")",
+      "Bash(find backend -name \"*.py\" -exec grep -l \"register\\\\|login\\\\|auth\" {} ;)",
+      "Bash(uvicorn main:app --host 0.0.0.0 --port 8000)",
+      "Bash(python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload)",
+      "Bash(PYTHONPATH=. uvicorn main:app --host 0.0.0.0 --port 8000 --reload)",
+      "Bash(python3 -c \"import sys; sys.path.insert\\(0, ''.''\\); from main import app; import uvicorn; uvicorn.run\\(app, host=''0.0.0.0'', port=8000\\)\")",
+      "Bash(pkill -f uvicorn)",
+      "Bash(curl -X POST http://localhost:8000/api/auth/register -H \"Content-Type: application/json\" -d '{\"\"email\"\": \"\"test@example.com\"\", \"\"password\"\": \"\"password123\"\"}')",
+      "Bash(curl -X POST http://localhost:8000/api/auth/login -H \"Content-Type: application/json\" -d '{\"\"email\"\": \"\"test@example.com\"\", \"\"password\"\": \"\"password123\"\"}')",
+      "Bash(pkill -f \"python.*main.*app\")",
+      "Bash(xargs kill -9)"
     ]
   }
 }

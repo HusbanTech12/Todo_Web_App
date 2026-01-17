@@ -2,12 +2,13 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from .routes import tasks
-from .routes import health
-from .config import settings
+from routes import tasks
+from routes import health
+from routes import auth
+from config import settings
 from sqlmodel import SQLModel
-from .db import engine
-from .models.base import Base
+from db import engine
+from models.base import Base
 
 app = FastAPI(title="Todo Backend API", version="1.0.0")
 
@@ -45,10 +46,12 @@ async def generic_exception_handler(request: Request, exc: Exception):
 # Include routers
 app.include_router(tasks.router, prefix="/api", tags=["tasks"])
 app.include_router(health.router, prefix="/api", tags=["health"])
+app.include_router(auth.router, prefix="/api", tags=["auth"])
 
 @app.on_event("startup")
 def on_startup():
     # Create database tables
+    from models.user import User  # Import user model to register it with SQLModel
     SQLModel.metadata.create_all(bind=engine)
 
 if __name__ == "__main__":
