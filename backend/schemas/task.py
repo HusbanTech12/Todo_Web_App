@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-<<<<<<< HEAD
 from typing import Optional, List
 from datetime import datetime
 from enum import Enum
@@ -42,16 +41,6 @@ class TaskUpdate(BaseModel):
 
 class TaskResponse(BaseModel):
     id: int
-=======
-from typing import List, Optional, Generic, TypeVar
-from datetime import datetime
-from models.task import Task
-
-T = TypeVar('T')
-
-class TaskResponse(BaseModel):
-    id: str
->>>>>>> 3472c09df4920281bb81456aab4e032e839461c6
     user_id: str
     title: str
     description: Optional[str]
@@ -60,7 +49,6 @@ class TaskResponse(BaseModel):
     updated_at: datetime
 
     class Config:
-<<<<<<< HEAD
         json_schema_extra = {
             "example": {
                 "id": 1,
@@ -139,15 +127,3 @@ class ErrorResponse(BaseModel):
                 }
             }
         }
-=======
-        from_attributes = True
-
-class TaskListResponse(BaseModel):
-    tasks: List[TaskResponse]
-
-class ApiResponse(BaseModel, Generic[T]):
-    success: bool
-    data: Optional[T] = None
-    error: Optional[str] = None
-    message: Optional[str] = None
->>>>>>> 3472c09df4920281bb81456aab4e032e839461c6

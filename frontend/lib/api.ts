@@ -3,7 +3,7 @@ import { ApiResponse } from '@/types/todos';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
 /**
- * Centralized API client with JWT token attachment
+ * Centralized API client that works with Better-Auth cookies
  */
 class ApiClient {
   private baseUrl: string;
@@ -13,7 +13,7 @@ class ApiClient {
   }
 
   /**
-   * Generic request method that automatically attaches JWT token
+   * Generic request method that works with JWT token authentication
    */
   async request<T>(
     endpoint: string,
@@ -21,12 +21,15 @@ class ApiClient {
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
 
-    // Get token from localStorage (where auth stores it)
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    // Get the token from localStorage if it exists
+    let token = null;
+    if (typeof window !== 'undefined') {
+      token = localStorage.getItem('auth_token');
+    }
 
     const headers = {
       'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
       ...options.headers,
     };
 
@@ -34,6 +37,7 @@ class ApiClient {
       const response = await fetch(url, {
         ...options,
         headers,
+        // Remove credentials: 'include' since we're using JWT tokens, not cookies
       });
 
       const data = await response.json();
@@ -56,7 +60,7 @@ class ApiClient {
     }
   }
 
-  // Authentication endpoints
+  // Authentication endpoints - using custom auth system with FastAPI backend
   async register(credentials: { email: string; password: string }) {
     return this.request('/api/auth/register', {
       method: 'POST',
@@ -77,28 +81,34 @@ class ApiClient {
     });
   }
 
-  // Todo endpoints
-  async getTodos() {
-    return this.request('/api/todos');
+  // Todo endpoints - these would call the FastAPI backend
+  async getTodos(userId: string) {
+    return this.request(`/api/${userId}/tasks`);
   }
 
-  async createTodo(todo: { title: string; description?: string | null; completed?: boolean }) {
-    return this.request('/api/todos', {
+  async createTodo(userId: string, todo: { title: string; description?: string | null; completed?: boolean }) {
+    return this.request(`/api/${userId}/tasks`, {
       method: 'POST',
       body: JSON.stringify(todo),
     });
   }
 
-  async updateTodo(id: string, todo: { title?: string; description?: string | null; completed?: boolean }) {
-    return this.request(`/api/todos/${id}`, {
+  async updateTodo(userId: string, taskId: string, todo: { title?: string; description?: string | null; completed?: boolean }) {
+    return this.request(`/api/${userId}/tasks/${taskId}`, {
       method: 'PUT',
       body: JSON.stringify(todo),
     });
   }
 
-  async deleteTodo(id: string) {
-    return this.request(`/api/todos/${id}`, {
+  async deleteTodo(userId: string, taskId: string) {
+    return this.request(`/api/${userId}/tasks/${taskId}`, {
       method: 'DELETE',
+    });
+  }
+
+  async toggleTodoCompletion(userId: string, taskId: string) {
+    return this.request(`/api/${userId}/tasks/${taskId}/complete`, {
+      method: 'PATCH',
     });
   }
 }

@@ -56,24 +56,35 @@ const RegisterForm: React.FC = () => {
         setError('Registration failed. Please try again.');
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred during registration');
+      // Handle specific error messages
+      if (err.message && err.message.includes('already exists')) {
+        setError('This email is already registered. Please use a different email or try logging in.');
+      } else {
+        setError(err.message || 'An error occurred during registration');
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>Create Account</CardTitle>
+    <Card className="w-full max-w-md mx-auto border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
+      <CardHeader className="text-center pb-6">
+        <div className="mx-auto h-12 w-12 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+          </svg>
+        </div>
+        <CardTitle className="text-2xl font-bold text-gray-900">Create Account</CardTitle>
+        <p className="text-sm text-gray-600 mt-2">Join us today to boost your productivity</p>
       </CardHeader>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 px-6">
           {error && <ErrorDisplay message={error} />}
 
           <div>
             <Input
-              label="Email"
+              label="Email Address"
               type="email"
               id="email"
               name="email"
@@ -81,6 +92,7 @@ const RegisterForm: React.FC = () => {
               onChange={handleChange}
               placeholder="your@email.com"
               required
+              className="w-full"
             />
           </div>
 
@@ -94,7 +106,9 @@ const RegisterForm: React.FC = () => {
               onChange={handleChange}
               placeholder="••••••••"
               required
+              className="w-full"
             />
+            <p className="mt-1 text-xs text-gray-500">Use at least 6 characters</p>
           </div>
 
           <div>
@@ -107,13 +121,14 @@ const RegisterForm: React.FC = () => {
               onChange={handleChange}
               placeholder="••••••••"
               required
+              className="w-full"
             />
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col">
+        <CardFooter className="flex flex-col px-6 pt-2 pb-6">
           <Button
             type="submit"
-            className="w-full"
+            className="w-full py-3 font-semibold text-base"
             disabled={loading}
           >
             {loading ? (
@@ -122,12 +137,12 @@ const RegisterForm: React.FC = () => {
                 Creating Account...
               </>
             ) : (
-              'Sign Up'
+              'Create Account'
             )}
           </Button>
           <p className="mt-4 text-center text-sm text-gray-600">
             Already have an account?{' '}
-            <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+            <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
               Sign in
             </a>
           </p>

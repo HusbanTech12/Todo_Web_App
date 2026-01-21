@@ -1,22 +1,30 @@
 import { useState, useEffect } from 'react';
 import { TodoItem, ApiResponse } from '@/types/todos';
 import { apiClient } from '@/lib/api';
+import { useAuth } from '@/contexts/auth-context';
 
 export const useTodos = () => {
+  const { user, loading: authLoading } = useAuth();
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // Fetch todos
   const fetchTodos = async () => {
+    if (!user) {
+      setError('User not authenticated');
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const response = await apiClient.getTodos() as ApiResponse<TodoItem[]>;
+      const response = await apiClient.getTodos(user.id) as ApiResponse<TodoItem[]>;
 
       if (response.success && response.data) {
-        setTodos(response.data);
+        setTodos(Array.isArray(response.data.data) ? response.data.data : []);
       } else {
         setError(response.error || 'Failed to fetch todos');
       }
@@ -29,19 +37,24 @@ export const useTodos = () => {
 
   // Create a new todo
   const createTodo = async (title: string, description?: string) => {
+    if (!user) {
+      setError('User not authenticated');
+      return null;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const response = await apiClient.createTodo({
+      const response = await apiClient.createTodo(user.id, {
         title,
         description,
         completed: false
       }) as ApiResponse<TodoItem>;
 
       if (response.success && response.data) {
-        setTodos(prev => [...prev, response.data!]);
-        return response.data!;
+        setTodos(prev => [...prev, response.data!.data]);
+        return response.data!.data;
       } else {
         setError(response.error || 'Failed to create todo');
         return null;
@@ -56,15 +69,20 @@ export const useTodos = () => {
 
   // Update an existing todo
   const updateTodo = async (id: string, updates: Partial<TodoItem>) => {
+    if (!user) {
+      setError('User not authenticated');
+      return null;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const response = await apiClient.updateTodo(id, updates) as ApiResponse<TodoItem>;
+      const response = await apiClient.updateTodo(user.id, id, updates) as ApiResponse<TodoItem>;
 
       if (response.success && response.data) {
-        setTodos(prev => prev.map(todo => todo.id === id ? response.data! : todo));
-        return response.data!;
+        setTodos(prev => prev.map(todo => todo.id === Number(id) ? response.data!.data : todo));
+        return response.data!.data;
       } else {
         setError(response.error || 'Failed to update todo');
         return null;
@@ -79,14 +97,19 @@ export const useTodos = () => {
 
   // Delete a todo
   const deleteTodo = async (id: string) => {
+    if (!user) {
+      setError('User not authenticated');
+      return false;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const response: ApiResponse = await apiClient.deleteTodo(id);
+      const response: ApiResponse = await apiClient.deleteTodo(user.id, id);
 
       if (response.success) {
-        setTodos(prev => prev.filter(todo => todo.id !== id));
+        setTodos(prev => prev.filter(todo => todo.id !== Number(id)));
         return true;
       } else {
         setError(response.error || 'Failed to delete todo');
@@ -102,20 +125,44 @@ export const useTodos = () => {
 
   // Toggle todo completion status
   const toggleTodo = async (id: string) => {
-    const todo = todos.find(t => t.id === id);
+    if (!user) {
+      setError('User not authenticated');
+      return null;
+    }
+
+    const todo = todos.find(t => t.id === Number(id));
     if (!todo) return null;
 
-    return updateTodo(id, { completed: !todo.completed });
+    // Use the patch endpoint for toggling completion
+    try {
+      setLoading(true);
+      const response = await apiClient.toggleTodoCompletion(user.id, id) as ApiResponse<TodoItem>;
+
+      if (response.success && response.data) {
+        setTodos(prev => prev.map(todo => todo.id === Number(id) ? response.data!.data : todo));
+        return response.data!.data;
+      } else {
+        setError(response.error || 'Failed to update todo completion');
+        return null;
+      }
+    } catch (err: any) {
+      setError(err.message || 'An error occurred while updating todo completion');
+      return null;
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Initialize todos on mount
   useEffect(() => {
-    fetchTodos();
-  }, []);
+    if (user) {
+      fetchTodos();
+    }
+  }, [user]);
 
   return {
     todos,
-    loading,
+    loading: loading || authLoading,
     error,
     fetchTodos,
     createTodo,

@@ -3,12 +3,6 @@ from typing import Optional
 from jose import JWTError, jwt
 from config import settings
 
-<<<<<<< HEAD
-def verify_token(token: str) -> Optional[dict]:
-    """
-    Verify JWT token and return decoded payload if valid
-    """
-=======
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -21,15 +15,16 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 def verify_token(token: str):
->>>>>>> 3472c09df4920281bb81456aab4e032e839461c6
     try:
         payload = jwt.decode(
             token,
             settings.BETTER_AUTH_SECRET,
             algorithms=[settings.ALGORITHM]
         )
-<<<<<<< HEAD
-        return payload
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            return None
+        return user_id
     except JWTError:
         return None
 
@@ -44,11 +39,3 @@ def extract_user_id_from_token(token: str) -> Optional[str]:
         user_id = payload.get('sub') or payload.get('user_id')
         return user_id
     return None
-=======
-        user_id: str = payload.get("sub")
-        if user_id is None:
-            return None
-        return user_id
-    except JWTError:
-        return None
->>>>>>> 3472c09df4920281bb81456aab4e032e839461c6

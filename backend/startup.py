@@ -1,10 +1,10 @@
 import uvicorn
-from backend.main import app
+from main import app
 
 def start():
     """Start the FastAPI application"""
     uvicorn.run(
-        "backend.main:app",
+        "main:app",
         host="0.0.0.0",
         port=8000,
         reload=True,
