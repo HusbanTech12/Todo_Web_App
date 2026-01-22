@@ -24,7 +24,7 @@ export const useTodos = () => {
       const response = await apiClient.getTodos(user.id) as ApiResponse<TodoItem[]>;
 
       if (response.success && response.data) {
-        setTodos(Array.isArray(response.data.data) ? response.data.data : []);
+        setTodos(Array.isArray(response.data) ? response.data : []);
       } else {
         setError(response.error || 'Failed to fetch todos');
       }
@@ -53,8 +53,8 @@ export const useTodos = () => {
       }) as ApiResponse<TodoItem>;
 
       if (response.success && response.data) {
-        setTodos(prev => [...prev, response.data!.data]);
-        return response.data!.data;
+        setTodos(prev => [...prev, response.data!]);
+        return response.data!;
       } else {
         setError(response.error || 'Failed to create todo');
         return null;
@@ -81,8 +81,8 @@ export const useTodos = () => {
       const response = await apiClient.updateTodo(user.id, id, updates) as ApiResponse<TodoItem>;
 
       if (response.success && response.data) {
-        setTodos(prev => prev.map(todo => todo.id === Number(id) ? response.data!.data : todo));
-        return response.data!.data;
+        setTodos(prev => prev.map(todo => todo.id === id ? response.data! : todo));
+        return response.data!;
       } else {
         setError(response.error || 'Failed to update todo');
         return null;
@@ -109,7 +109,7 @@ export const useTodos = () => {
       const response: ApiResponse = await apiClient.deleteTodo(user.id, id);
 
       if (response.success) {
-        setTodos(prev => prev.filter(todo => todo.id !== Number(id)));
+        setTodos(prev => prev.filter(todo => todo.id !== id));
         return true;
       } else {
         setError(response.error || 'Failed to delete todo');
@@ -130,7 +130,7 @@ export const useTodos = () => {
       return null;
     }
 
-    const todo = todos.find(t => t.id === Number(id));
+    const todo = todos.find(t => t.id === id);
     if (!todo) return null;
 
     // Use the patch endpoint for toggling completion
@@ -139,8 +139,8 @@ export const useTodos = () => {
       const response = await apiClient.toggleTodoCompletion(user.id, id) as ApiResponse<TodoItem>;
 
       if (response.success && response.data) {
-        setTodos(prev => prev.map(todo => todo.id === Number(id) ? response.data!.data : todo));
-        return response.data!.data;
+        setTodos(prev => prev.map(todo => todo.id === id ? response.data! : todo));
+        return response.data!;
       } else {
         setError(response.error || 'Failed to update todo completion');
         return null;

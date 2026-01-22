@@ -47,7 +47,7 @@ const DashboardPage = () => {
       setUserEmail('user@example.com');
     }
 
-    // Simulate loading user's todos (in a real app, this would come from an API)
+    // Simulate loading user&#39;s todos (in a real app, this would come from an API)
     setTimeout(() => {
       const mockTodos = [
         { id: 1, title: 'Complete project proposal', completed: false, priority: 'high', dueDate: '2026-01-25' },
@@ -210,7 +210,7 @@ const DashboardPage = () => {
           <h1 className="text-3xl font-bold text-gray-900">
             Welcome back, <span className="text-indigo-600">{userName}</span> 👋
           </h1>
-          <p className="mt-2 text-gray-600">Here's what's happening with your tasks today.</p>
+          <p className="mt-2 text-gray-600">Here&#39;s what&#39;s happening with your tasks today.</p>
         </div>
 
         {/* Stats Cards */}
@@ -452,7 +452,7 @@ const DashboardPage = () => {
                 <div className="pt-2">
                   <p className="text-sm text-gray-600">
                     {stats.completed > 0
-                      ? `Great job! You've completed ${stats.completed} tasks.`
+                      ? `Great job! You&#39;ve completed ${stats.completed} tasks.`
                       : 'Start completing tasks to boost your productivity.'}
                   </p>
                 </div>
