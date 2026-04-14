@@ -31,8 +31,8 @@ export interface AuthContextType {
   user: User | null;
   session: AuthSession | null;
   loading: boolean;
-  login: (credentials: LoginCredentials) => Promise<boolean>;
-  register: (credentials: RegisterCredentials) => Promise<boolean>;
+  login: (credentials: LoginCredentials) => Promise<{ success: boolean; error?: string }>;
+  register: (credentials: RegisterCredentials) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
 }

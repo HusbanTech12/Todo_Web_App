@@ -68,7 +68,7 @@ export const useTodos = () => {
   };
 
   // Update an existing todo
-  const updateTodo = async (id: string, updates: Partial<TodoItem>) => {
+  const updateTodo = async (id: number, updates: Partial<TodoItem>) => {
     if (!user) {
       setError('User not authenticated');
       return null;
@@ -96,7 +96,7 @@ export const useTodos = () => {
   };
 
   // Delete a todo
-  const deleteTodo = async (id: string) => {
+  const deleteTodo = async (id: number) => {
     if (!user) {
       setError('User not authenticated');
       return false;
@@ -124,7 +124,7 @@ export const useTodos = () => {
   };
 
   // Toggle todo completion status
-  const toggleTodo = async (id: string) => {
+  const toggleTodo = async (id: number) => {
     if (!user) {
       setError('User not authenticated');
       return null;

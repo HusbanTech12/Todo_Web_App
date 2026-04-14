@@ -13,14 +13,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // Check if user is already logged in on initial load
     const token = localStorage.getItem('auth_token');
-    if (token) {
-      // We could verify the token here if needed
-      // For now, we'll just set the loading state appropriately
+    const storedUser = localStorage.getItem('user');
+    if (token && storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error('Failed to parse stored user:', e);
+      }
     }
     setLoading(false);
   }, []);
 
-  const login = async (credentials: LoginCredentials): Promise<boolean> => {
+  const login = async (credentials: LoginCredentials): Promise<{ success: boolean; error?: string }> => {
     try {
       setLoading(true);
       const response = await apiClient.login(credentials);
@@ -30,25 +34,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Store the token in localStorage
         localStorage.setItem('auth_token', responseData.token);
 
-        // Set the user if available in response
+        // Store user in localStorage and state
         if (responseData.user) {
+          localStorage.setItem('user', JSON.stringify(responseData.user));
           setUser(responseData.user);
         }
 
-        return true;
+        return { success: true };
       } else {
         console.error('Login failed:', response.error);
-        return false;
+        return { success: false, error: response.error || 'Login failed' };
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      return false;
+      return { success: false, error: error.message || 'Login failed' };
     } finally {
       setLoading(false);
     }
   };
 
-  const register = async (credentials: RegisterCredentials): Promise<boolean> => {
+  const register = async (credentials: RegisterCredentials): Promise<{ success: boolean; error?: string }> => {
     try {
       setLoading(true);
       const response = await apiClient.register({
@@ -61,19 +66,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Store the token in localStorage
         localStorage.setItem('auth_token', responseData.token);
 
-        // Set the user if available in response
+        // Store user in localStorage and state
         if (responseData.user) {
+          localStorage.setItem('user', JSON.stringify(responseData.user));
           setUser(responseData.user);
         }
 
-        return true;
+        return { success: true };
       } else {
         console.error('Registration failed:', response.error);
-        return false;
+        return { success: false, error: response.error || 'Registration failed' };
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration error:', error);
-      return false;
+      return { success: false, error: error.message || 'Registration failed' };
     } finally {
       setLoading(false);
     }
@@ -89,6 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Clear user and token regardless of API call success
       setUser(null);
       localStorage.removeItem('auth_token');
+      localStorage.removeItem('user');
       setLoading(false);
     }
   };
@@ -98,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthContext.Provider value={{
       user,
-      session: null, // Will be populated when we have more session data
+      session: null,
       loading,
       login,
       register,

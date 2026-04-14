@@ -47,21 +47,20 @@ const RegisterForm: React.FC = () => {
     setError(null);
 
     try {
-      const success = await register(formData);
+      const result = await register(formData);
+      console.log('Registration result:', result);
 
-      if (success) {
+      if (result.success) {
         // Redirect to dashboard after successful registration
         router.push('/dashboard');
       } else {
-        setError('Registration failed. Please try again.');
+        const errorMsg = result.error || 'Registration failed. Please try again.';
+        console.log('Setting error:', errorMsg);
+        setError(errorMsg);
       }
     } catch (err: any) {
-      // Handle specific error messages
-      if (err.message && err.message.includes('already exists')) {
-        setError('This email is already registered. Please use a different email or try logging in.');
-      } else {
-        setError(err.message || 'An error occurred during registration');
-      }
+      console.error('Registration exception:', err);
+      setError(err.message || 'An error occurred during registration');
     } finally {
       setLoading(false);
     }

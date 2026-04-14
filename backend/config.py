@@ -14,7 +14,3 @@ class Settings(BaseSettings):
         extra = "ignore"
 
 settings = Settings()
-
-# Debug: print the DATABASE_URL
-import sys
-print(f"DEBUG: DATABASE_URL = {repr(settings.DATABASE_URL)}", file=sys.stderr)

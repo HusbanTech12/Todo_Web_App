@@ -37,21 +37,30 @@ class ApiClient {
       const response = await fetch(url, {
         ...options,
         headers,
-        // Remove credentials: 'include' since we're using JWT tokens, not cookies
       });
 
       const data = await response.json();
+      console.log('API Response:', { status: response.status, ok: response.ok, data });
 
       if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
+        const errorMsg = data.detail || data.message || `HTTP error! status: ${response.status}`;
+        console.log('API Error thrown:', errorMsg);
+        throw new Error(errorMsg);
+      }
+
+      // Backend already returns {success, data, message}, pass it through
+      if (data.success !== undefined) {
+        console.log('Returning backend data as-is:', data);
+        return data as ApiResponse<T>;
       }
 
       return {
         success: true,
-        data,
+        data: data as T,
         message: 'Request successful'
       };
     } catch (error: any) {
+      console.log('API Catch - error:', error.message);
       return {
         success: false,
         error: error.message || 'Unknown error occurred',

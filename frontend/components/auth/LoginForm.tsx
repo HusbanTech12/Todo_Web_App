@@ -35,13 +35,13 @@ const LoginForm: React.FC = () => {
     setError(null);
 
     try {
-      const success = await login(formData);
+      const result = await login(formData);
 
-      if (success) {
+      if (result.success) {
         // Redirect to dashboard after successful login
         router.push('/dashboard');
       } else {
-        setError('Invalid email or password. Please try again.');
+        setError(result.error || 'Invalid email or password. Please try again.');
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during login');

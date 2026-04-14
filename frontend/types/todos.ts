@@ -1,12 +1,12 @@
-// Todo Item entity from data model
+// Todo Item entity from data model - matches backend response
 export interface TodoItem {
-  id: string;
-  userId: string;
+  id: number;
+  user_id: string;
   title: string;
   description: string | null;
   completed: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: string;
+  updated_at: string;
 }
 
 // UI State entity from data model
