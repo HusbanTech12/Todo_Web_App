@@ -1,14 +1,14 @@
 from pydantic_settings import BaseSettings
-import os
 from dotenv import load_dotenv
 
+# Load .env file first
 load_dotenv()
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
-    BETTER_AUTH_SECRET: str = os.getenv("BETTER_AUTH_SECRET", "fallback_secret_for_dev")
-    ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+    DATABASE_URL: str = ""
+    BETTER_AUTH_SECRET: str = "fallback_secret_for_dev"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     class Config:
         env_file = ".env"

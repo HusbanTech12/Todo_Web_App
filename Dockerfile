@@ -24,6 +24,9 @@ COPY backend/exceptions/ ./exceptions/
 RUN printf 'DATABASE_URL=postgresql://neondb_owner:npg_k9f6zVoptSTQ@ep-restless-morning-ai4jfe2t-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\n' > .env && \
     printf 'BETTER_AUTH_SECRET=docker_secret\n' >> .env
 
+# Debug: show the .env file content
+RUN cat .env
+
 EXPOSE 8000
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
