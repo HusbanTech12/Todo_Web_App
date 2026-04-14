@@ -6,23 +6,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/todo_db
-      - BETTER_AUTH_SECRET=your_better_auth_secret_here
-    depends_on:
-      - db
+      - DATABASE_URL=postgresql://neondb_owner:npg_k9f6zVoptSTQ@ep-restless-morning-ai4jfe2t-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - BETTER_AUTH_SECRET=57ZzULo3TAxlR9IdMJfXV3uybyWQNKlJ
     volumes:
       - .:/app
-
-  db:
-    image: postgres:15
-    environment:
-      - POSTGRES_DB=todo_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:

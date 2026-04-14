@@ -21,8 +21,8 @@ COPY backend/startup.py .
 COPY backend/exceptions/ ./exceptions/
 
 # Create a default .env file for Docker environment (will be overridden by docker-compose anyway)
-RUN echo "DATABASE_URL=postgresql://postgres:password@db:5432/todo_db" > .env && \
-    echo "BETTER_AUTH_SECRET=docker_secret" >> .env
+RUN printf 'DATABASE_URL=postgresql://neondb_owner:npg_k9f6zVoptSTQ@ep-restless-morning-ai4jfe2t-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\n' > .env && \
+    printf 'BETTER_AUTH_SECRET=docker_secret\n' >> .env
 
 EXPOSE 8000
 

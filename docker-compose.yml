@@ -7,10 +7,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/todo_db
-      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-your_better_auth_secret_here}
-    depends_on:
-      - db
+      - DATABASE_URL=postgresql://neondb_owner:npg_k9f6zVoptSTQ@ep-restless-morning-ai4jfe2t-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-57ZzULo3TAxlR9IdMJfXV3uybyWQNKlJ}
     volumes:
       - ./backend:/app
     networks:
@@ -26,7 +24,7 @@ services:
     environment:
       - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
       - NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
-      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-your_better_auth_secret_here}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-57ZzULo3TAxlR9IdMJfXV3uybyWQNKlJ}
     depends_on:
       - backend
     volumes:
@@ -35,23 +33,6 @@ services:
     networks:
       - todo-network
 
-  db:
-    image: postgres:15
-    container_name: todo_postgres
-    environment:
-      - POSTGRES_DB=todo_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - todo-network
-
 networks:
   todo-network:
     driver: bridge
-
-volumes:
-  postgres_data:
