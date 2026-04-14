@@ -4,12 +4,14 @@ from pathlib import Path
 class Settings(BaseSettings):
     DATABASE_URL: str = ""
     BETTER_AUTH_SECRET: str = "fallback_secret_for_dev"
+    BETTER_AUTH_URL: str = "http://localhost:3000"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     class Config:
         env_file = str(Path(__file__).parent / ".env")
         env_file_encoding = "utf-8"
+        extra = "ignore"
 
 settings = Settings()
 
